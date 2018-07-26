@@ -12,7 +12,7 @@ Where:
 | Parameter | Type | Default value | Mandatory | Meaning |
 |---------- | ---- | ------------- | --------- | ------- |
 | fileToCreate | str |  | Yes | This is the complete path where the tileindex will be created the layer name will be the name of the file. The file must not already exist or else a fileAlreadyExists exception will be thrown. |
-| index | dict or list | Yes |  | This is a python dict *r.f.* [Index structure](#Index_structure) section. |
+| index | list of dict | Yes |  | This is a python list *r.f.* [Index structure](#Index_structure) section. |
 | doNotOpen | list | No | None | This will ask this function to skip the step where it open every file to catch the geometry of the data. doNotOpen is simply a list of point (tuple)  |
 
 ### Index structure
@@ -30,22 +30,22 @@ This will map to a shapefile organised this way:
 
 For multiple dimensions, the python dictionary must be organised this way:
 ``` python
-{"dim_1":{
-	label1_0:{
-		"dim_2":{
+["dim_1",{
+	label1_0:[
+		"dim_2",{
 			"label2_0":"path0_0",
 			...
 			"label2_N":"path0_N"}
-		},
+		],
 	....
-	"label1_M":{
-		"dim_2":{
+	"label1_M":[
+		"dim_2",{
 			"label2_0":"pathM_0",
 			...
 			"label2_N":"pathM_N"}
-		}
+		]
 	}
-}
+]
 ```
 This will map to a shapefile organised this way:
 
