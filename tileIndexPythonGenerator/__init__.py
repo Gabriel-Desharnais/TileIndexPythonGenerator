@@ -1,1 +1,1 @@
-from tileIndexPythonGenerator import createFromListStruct
+from .tileIndexPythonGenerator import createFromListStruct

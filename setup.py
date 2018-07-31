@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
-import mapycli
+import tileIndexPythonGenerator
 setup(
-    name='mapycli',
+    name='tileIndexPythonGenerator',
     version='0.0.0.3',
     description='Python module to generate a TileIndex',
     url='https://github.com/Gabriel-Desharnais/TileIndexPythonGenerator',
@@ -21,7 +21,7 @@ setup(
     keywords='mapserver mapfile tileindex',
     packages=find_packages(),
 
-    install_requires=['ogc',],
+    install_requires=[],
 
 
     )
