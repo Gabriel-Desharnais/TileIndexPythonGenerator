@@ -92,10 +92,12 @@ Some care will be put in readability of the code but the number one priority is 
 There is limited support for these version
 
 | version | name | type | End of support date |
+| -- | -- | -- | -- |
 | 0.0.0.3 | Atlantic Express | DS | 2018-08-01T00:00:00Z |
 | 0.0.0.5 | Adirondack | LTS | 2020-08-01T00:00:00Z |
 
 LTS : Long Term Support
+
 DS : Developer Support
 
 Names are choosen from:
