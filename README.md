@@ -13,10 +13,11 @@ Where:
 |---------- | ---- | ------------- | --------- | ------- |
 | fileToCreate | str |  | Yes | This is the complete path where the tileindex will be created the layer name will be the name of the file. The file must not already exist or else a fileAlreadyExists exception will be thrown. |
 | index | list of dict | Yes |  | This is a python list *r.f.* [Index structure](#Index_structure) section. |
-| doNotOpen | list | No | None | This will ask this function to skip the step where it open every file to catch the geometry of the data. doNotOpen is simply a list of point (tuple)  |
+| doNotOpen | list | No | None | This will ask this function to skip the step where it open every file to catch the geometry of the data. doNotOpen is simply a list of point (tuple) **Default value not working, list mandatory** |
 
 ### Index structure
-For a no dimension, the python list must be organised this way:
+For a no dimension, the python list must be organised this way: 
+**Not Yet implemented**
 ``` python
 [path0, ... pathN]
 ```
