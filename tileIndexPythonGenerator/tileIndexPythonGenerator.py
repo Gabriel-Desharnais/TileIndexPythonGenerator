@@ -112,7 +112,7 @@ def createFromListStruct(fileToCreate, index, doNotOpen=None, fieldsType=[]):
 	for name, maxLenght in fieldsInfo.items():
 		# Add each fields
 		# Create field definition
-		if fieldsType == [] and fieldsType == "int"
+		if not (fieldsType == []) and fieldsType[index] == "int":
 			id = ogr.FieldDefn(name, ogr.OFTInteger)
 		else:
 			id = ogr.FieldDefn(name, ogr.OFTString)

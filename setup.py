@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import tileIndexPythonGenerator
 setup(
     name='tileIndexPythonGenerator',
-    version='0.0.0.6',
+    version='0.0.0.7',
     description='Python module to generate a TileIndex',
     url='https://github.com/Gabriel-Desharnais/TileIndexPythonGenerator',
     author='Gabriel Desharnais',
