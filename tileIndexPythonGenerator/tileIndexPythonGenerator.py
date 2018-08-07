@@ -74,7 +74,7 @@ def fillLayer(layer, polygon, index, fields=[]):
 		raise(Exception(
 			"invalid index struct not same type at the same level"))
 	
-def createFromListStruct(fileToCreate, index, doNotOpen=None):
+def createFromListStruct(fileToCreate, index, doNotOpen=None, fieldsType=[]):
 	# This function will create a new tileIndex see doc for more
 	# information.
 	
@@ -108,14 +108,19 @@ def createFromListStruct(fileToCreate, index, doNotOpen=None):
 	## Create the fields
 	# Get info on the fields
 	fieldsInfo = getFieldInfoFromIndex(index)
+	index = 0
 	for name, maxLenght in fieldsInfo.items():
 		# Add each fields
 		# Create field definition
-		id = ogr.FieldDefn(name, ogr.OFTString)
-		# Set width
-		id.SetWidth(min(maxLenght,254))
-		# Add field to layer
+		if fieldsType == [] and fieldsType == "int"
+			id = ogr.FieldDefn(name, ogr.OFTInteger)
+		else:
+			id = ogr.FieldDefn(name, ogr.OFTString)
+			# Set width
+			id.SetWidth(min(maxLenght,254))
+			# Add field to layer
 		layer.CreateField(id)
+		index += 1
 	
 	# Fill the layer with the features
 	fillLayer(layer,poly,index)
