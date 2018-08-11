@@ -48,26 +48,20 @@ def getFieldInfoFromIndex(index):
 			"invalid index struct not same type at the same level"))
 	fields_info(index,fields)	
 	return fields
-def fillLayer(layer, polygon, index, fields=[]):
+def fillLayer(tIndex, index, fields=[]):
 	# This function will be called recursively
+	
 	thisFieldName = index[0]
 	
 	values = index[1].values()
 	if all(map(lambda x : isinstance(x,str), values)):
 		# Write every feature
 		for nameOfField,location in index[1].items():
-			# Write every field
-			feature = ogr.Feature(layer.GetLayerDefn())
-			feature.SetGeometry(polygon) # Add geometry
-			for fieldName, fieldValue in fields+[(thisFieldName, nameOfField)]:
-				feature.SetField(fieldName,fieldValue)
-			# Write the location field
-			feature.SetField("LOCATION",location)
-			# Add feature to layer
-			layer.CreateFeature(feature)
+			tIndex.add(fields+[(thisFieldName, nameOfField)], location)
+			
 	elif all(map(lambda x : isinstance(x,list),values)):
 		# for each list apply this function
-		for i in map(lambda x : fillLayer(layer, polygon, x[1], fields+[(thisFieldName,x[0])]), index[1].items()):
+		for i in map(lambda x : fillLayer(tIndex, x[1], fields+[(thisFieldName,x[0])]), index[1].items()):
 			pass
 			# Recursive call
 	else:
@@ -78,52 +72,70 @@ def createFromListStruct(fileToCreate, index, doNotOpen=None, fieldsType=[]):
 	# This function will create a new tileIndex see doc for more
 	# information.
 	
-	## First step is to create a new file named %fileToCreate%.
-	# The created tileindex will be a shapefile
-	driver = ogr.GetDriverByName("ESRI Shapefile")
-	# Open %fileToCreate% and allow read/write
-	dataSource = driver.CreateDataSource(fileToCreate)
-
-	## Now that we have a good editable Shapefile, we have to 
-	## create a layer. This layer will be named after the name
-	##  of %fileToCreate%.
-	# The file name is retrieved via os.path.basename
-	# The geom_type will be set to ogr.wkbPolygon
-	layer = dataSource.CreateLayer(os.path.basename(fileToCreate).replace('.shp','')
-					, geom_type=ogr.wkbPolygon)
-	
-	## Now it is time to create a default polygone that will be
-	## associated with every layer. No support for doNotOpen=None
-	## for now.
-	# Create a ring
-	ring = ogr.Geometry(ogr.wkbLinearRing)
-	# Add all point to the ring
-	for point in doNotOpen:
-		ring.AddPoint(*point) # pass coord directly to ogr 
- 	
-	# Create the actual polygon from the ring
-	poly = ogr.Geometry(ogr.wkbPolygon)
-	poly.AddGeometry(ring)
-
-	## Create the fields
-	# Get info on the fields
+	# Get fields name and lenght
 	fieldsInfo = getFieldInfoFromIndex(index)
-	index = 0
-	for name, maxLenght in fieldsInfo.items():
-		# Add each fields
-		# Create field definition
-		if not (fieldsType == []) and fieldsType[index] == "int":
-			id = ogr.FieldDefn(name, ogr.OFTInteger)
-		else:
+	
+	# Create a layer object
+	tIndex = tileIndex(fileToCreate, fieldsInfo.items(), doNotOpen)
+	
+	# Fill the layer with the features
+	fillLayer(tIndex, index)
+	
+
+
+class tileIndex:
+	# This class defines an object to create and manipulate a tileIndex
+	def __init__(self, fileToCreate, fields, polygon):
+		# This will create the tileIndex file
+		## First step is to create a new file named %fileToCreate%.
+		# The created tileindex will be a shapefile
+		driver = ogr.GetDriverByName("ESRI Shapefile")
+		# Open %fileToCreate% and allow read/write
+		self.dataSource = driver.CreateDataSource(fileToCreate)
+
+		## Now that we have a good editable Shapefile, we have to 
+		## create a layer. This layer will be named after the name
+		##  of %fileToCreate%.
+		# The file name is retrieved via os.path.basename
+		# The geom_type will be set to ogr.wkbPolygon
+		self.layer = self.dataSource.CreateLayer(os.path.basename(fileToCreate).replace('.shp','')
+					, geom_type=ogr.wkbPolygon)
+		## Now it is time to create a default polygone that will be
+		## associated with every layer. No support for polygon=None
+		## for now.
+		# Create a ring
+		ring = ogr.Geometry(ogr.wkbLinearRing)
+		# Add all point to the ring
+		for point in polygon:
+			ring.AddPoint(*point) # pass coord directly to ogr 
+		
+		# Create the actual polygon from the ring
+		self.poly = ogr.Geometry(ogr.wkbPolygon)
+		self.poly.AddGeometry(ring)
+
+		## Create the fields
+		for name, maxLenght in fields:
+			# Add each fields
+			# Create field definition
+		
 			id = ogr.FieldDefn(name, ogr.OFTString)
 			# Set width
 			id.SetWidth(min(maxLenght,254))
 			# Add field to layer
-		layer.CreateField(id)
-		index += 1
+			self.layer.CreateField(id)
 	
-	# Fill the layer with the features
-	fillLayer(layer,poly,index)
-	
-	# Close dataSource
-	dataSource.Destroy() # Close shapefile
+	def add(self, fields, location):
+		# This function will add a feature in the layer
+		# Write every field
+		feature = ogr.Feature(self.layer.GetLayerDefn())
+		feature.SetGeometry(self.poly) # Add geometry
+		for fieldName, fieldValue in fields:
+			feature.SetField(fieldName,fieldValue)
+		# Write the location field
+		feature.SetField("LOCATION",location)
+		# Add feature to layer
+		self.layer.CreateFeature(feature)
+		
+	def close(self):
+		# This function will close the layer file.
+		self.dataSource.Destroy() # Close shapefile
