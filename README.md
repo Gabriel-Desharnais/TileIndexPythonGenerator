@@ -114,6 +114,7 @@ There is limited support for these version
 | -- | -- | -- | -- |
 | 0.0.0.3 | Atlantic Express | DS | 2018-08-01T00:00:00Z |
 | 0.0.0.5 | Adirondack | LTS | 2020-08-01T00:00:00Z |
+| 1.0.0.0 | Acadian | ULTS | 2040-01-01T00:00:00Z |
 
 LTS : Long Term Support
 
@@ -136,7 +137,7 @@ version numbering is done this way:
 ```
 0.0.0.0
 | | | |---Update number changes every time an update is done
-| | |-----DS number 
+| | |-----DS number
 | |-------LTS number
 |---------ULTS number
 ```
