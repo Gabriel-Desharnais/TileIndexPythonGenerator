@@ -148,11 +148,20 @@ class tileIndexes:
 		self.fieldsInTile = fieldsInTile
 		self.polygon = polygon
 		self.tileIndexes = {}
+		# Create an empty set for every field available
+		self.values = {}
+		for field in fieldsInPath:
+			self.values[field] = set()
+
+		for field, len in fieldsInTile:
+			self.values[field] = set()
 	def add(self, fields, location):
 		# This function add info to the right tileIndex
+		# Save info in values variable
+		for field, value in fields.items():
+			self.values[field].add(value)
 		# Create the key tuple
 		key = tuple([fields[x] for x in self.fieldsInPath])
-		print(key)
 		try:
 			self.tileIndexes[key]
 		except KeyError:
@@ -161,6 +170,14 @@ class tileIndexes:
 			del fields[fieldsToDelete]
 
 		self.tileIndexes[key].add(fields.items(), location)
+
+	def max(self, field):
+		# This function will return the maximum value of a dimension
+		return max(self.values[field])
+
+	def min(self, field):
+		# This function will return the minimum value of a dimension
+		return min(self.values[field])
 
 	def close(self):
 		# Close all files
